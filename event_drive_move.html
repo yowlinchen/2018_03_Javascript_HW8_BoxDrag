@@ -5,26 +5,30 @@
     <script>
         // When HTML DOM is redy / call init() 
         let box;
+        let shift_left;
+        let shift_top;
         function init() {
             box=document.getElementById("box");
-            box.addEventListener("click",pickup);
+            box.addEventListener("mousedown",pickup);
         }
-        function pickup() { // can be put here w/o any problem.  Before it was before init()
+        function pickup(e) { // can be put here w/o any problem.  Before it was before init()
             // let box move with mouse
             document.addEventListener("mousemove",move);
             // Change the event handler.  if you click 1 more time, execute put down
-            box.removeEventListener("click",pickup); 
-            box.addEventListener("click",putdown);
+            box.removeEventListener("mousedown",pickup); 
+            box.addEventListener("mouseup",putdown);
+            shift_left = e.clientX - box.offsetLeft; 
+            shift_top = e.clientY - box.offsetTop; 
         }
         function move(e) {
-            // document.title=e.clientX+","+e.clientY;
-            box.style.left=(e.clientX-20)+"px";
-            box.style.top=(e.clientY-20)+"px";
+            document.title=(e.clientX)+","+(e.clientY);
+            box.style.left=(e.clientX-shift_left)+"px";
+            box.style.top=(e.clientY-shift_top)+"px";
         }
         function putdown() { 
             document.removeEventListener("mousemove",move);
-            box.addEventListener("click",pickup);
-            box.removeEventListener("click",putdown); 
+            box.addEventListener("mousedown",pickup);
+            box.removeEventListener("mouseup",putdown); 
         }
         window.addEventListener("load",init); // same thing as put in the body tag like before
     </script>
