@@ -11,14 +11,17 @@
             box=document.getElementById("box");
             box.addEventListener("mousedown",pickup);
         }
-        function pickup(e) { // can be put here w/o any problem.  Before it was before init()
-            // let box move with mouse
-            document.addEventListener("mousemove",move);
-            // Change the event handler.  if you click 1 more time, execute put down
-            box.removeEventListener("mousedown",pickup); 
-            box.addEventListener("mouseup",putdown);
+        function pickup(e) { 
+            // after mouse down record down the shift_left / shift_top to note down the 
+            // differences between top left corner & mouse coordinates
             shift_left = e.clientX - box.offsetLeft; 
             shift_top = e.clientY - box.offsetTop; 
+            // Remove the mousdown event
+            box.removeEventListener("mousedown",pickup); 
+            // Register the mouseup event & mousemove event
+            // Predict the future events end user will do (mousemove or mouseup)
+            document.addEventListener("mousemove",move);
+            box.addEventListener("mouseup",putdown);
         }
         function move(e) {
             document.title=(e.clientX)+","+(e.clientY);
@@ -26,9 +29,12 @@
             box.style.top=(e.clientY-shift_top)+"px";
         }
         function putdown() { 
+            // Remove the "mousemove" / "mouseup" events as we need to start a loop of mousedown 
+            // events from the beginning
             document.removeEventListener("mousemove",move);
-            box.addEventListener("mousedown",pickup);
             box.removeEventListener("mouseup",putdown); 
+            // Add teh mousedown event
+            box.addEventListener("mousedown",pickup);
         }
         window.addEventListener("load",init); // same thing as put in the body tag like before
     </script>
